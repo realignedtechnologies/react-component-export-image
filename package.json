@@ -6,6 +6,8 @@
   "types": "main.d.ts",
   "scripts": {
     "build": "rollup -c",
+    "release": "npm run build && npm version patch && npm publish",
+    "postpublish": "git push origin --all; git push origin --tags",
     "build-webpack": "webpack --mode production",
     "build:analyze": "webpack --profile --json > webpack-stats.json && webpack-bundle-analyzer webpack-stats.json ./dist"
   },
