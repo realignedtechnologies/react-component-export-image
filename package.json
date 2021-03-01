@@ -1,6 +1,6 @@
 {
   "name": "@realignedtechnologies/react-component-export-image",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "export component as jpeg, png, pdf",
   "main": "dist/index.js",
   "types": "main.d.ts",
