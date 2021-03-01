@@ -1,11 +1,9 @@
 import html2canvas from 'html2canvas';
-import JsPDF from 'jspdf';
 import ReactDOM from 'react-dom';
 
 const fileType = {
     PNG: 'image/png',
     JPEG: 'image/jpeg',
-    PDF: 'application/pdf'
 };
 
 const DEFAULT_PNG = {
@@ -18,13 +16,6 @@ const DEFAULT_JPEG = {
     fileName:'component.jpg',
     type: fileType.JPEG,
     html2CanvasOptions: {}
-};
-
-const DEFAULT_PDF = {
-    fileName: 'component.pdf',
-    type: fileType.PDF,
-    html2CanvasOptions: {}, 
-    pdfOptions: {}
 };
 
 /**
@@ -52,14 +43,6 @@ const saveAs = (uri, filename) => {
  * @param  {object} html2CanvasOptions={}
  */
 
-const getPDF = (canvas, {w, h, orientation, unit = 'mm', pdfFormat}) => {
-    const width = w || canvas.width
-    const height = h || canvas.height
-    const o = orientation || width > height ? 'l' : 'p'
-    const format = pdfFormat || 'a4'
-
-    return new JsPDF(o, unit, format)
-}
 
 const exportComponent = (node, {
     fileName, 
@@ -77,20 +60,7 @@ const exportComponent = (node, {
         useCORS: true,
         ...html2CanvasOptions
     }).then(canvas => {
-        if (type === fileType.PDF) {
-            const pdf = getPDF(canvas, pdfOptions)
-            pdf.addImage(
-                canvas.toDataURL(fileType.PNG, 1.0), 
-                'PNG', 
-                pdfOptions.x || 0, 
-                pdfOptions.y || 0,
-                pdfOptions.w || canvas.width,
-                pdfOptions.h || canvas.height
-            );
-            pdf.save(fileName);
-        } else {
             saveAs(canvas.toDataURL(type, 1.0), fileName);
-        }
     });
 };
 
@@ -109,17 +79,7 @@ const exportComponentAsPNG = (node, parameters = {}) => exportComponent(node, {.
  */
 const exportComponentAsJPEG = (node, parameters = {}) => exportComponent(node, {...DEFAULT_JPEG, ...parameters});
 
-/**
- * @param  {React.RefObject} node
- * @param  {string} fileName='component.pdf'
- * @param  {string} type=fileType.PDF
- * @param  {object} html2CanvasOptions={}
- * @param  {string} pdfOptions={}
- */
-const exportComponentAsPDF = (node, parameters = {}) => exportComponent(node, {...DEFAULT_PDF, ...parameters});
-
 export { 
     exportComponentAsJPEG,
-    exportComponentAsPDF,
     exportComponentAsPNG
 };
